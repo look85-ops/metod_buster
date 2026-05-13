@@ -265,8 +265,7 @@
     <div class="tab-content" id="activities">
         <div class="info-box">
             <strong>Для чего:</strong> оживить занятие и встряхнуть группу подходящей активностью.<br>
-            <strong>Что делать:</strong> укажи тему, цель, время, формат и нажми «Сгенерировать».<br>
-            <strong>Если сбой ИИ:</strong> выдадим идею из базы.
+            <strong>Что делать:</strong> укажи тему, цель, время, формат и нажми «Сгенерировать».
         </div>
         <div class="generator-box">
             <p>Генерируй активности для оживления обучения</p>
@@ -297,7 +296,7 @@
                     <option value="в группах">В группах</option>
                   </select>
                 </div>
-                <div class="api-note">AI-генерация через сервер (OpenRouter). При ошибке — выдадим из базы.</div>
+                <div class="api-note">AI‑генерация. При ошибке — выдадим идею из базы.</div>
             </div>
             <button class="generate-btn" id="genActivityBtn">🎲 Сгенерировать</button>
             <div class="activity-result" id="activityResult" style="display:none"></div>
@@ -642,10 +641,9 @@
                     messages: [{ role: 'user', content: buildActivityPrompt() }]
                 })
             });
-            
             const data = await response.json();
-            const activity = data.choices?.[0]?.message?.content || staticActivities[Math.floor(Math.random() * staticActivities.length)];
-            
+            const activity = data.choices?.[0]?.message?.content;
+            if (!activity) throw new Error('No AI');
             result.innerHTML = activity + '<div class="activity-source">🤖 Сгенерировано AI</div>';
             result.style.display = 'block';
         } catch (e) {
@@ -659,6 +657,8 @@
     }
 
     document.getElementById('genActivityBtn').onclick = generateActivityAI;
+
+    // убраны клиентские ключи, при ошибке — сразу база
 
     // Presets for quick generation
     function applyPreset(key) {
