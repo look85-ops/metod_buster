@@ -284,7 +284,6 @@
             <strong>Что делать:</strong> нажми «Вытянуть карту» и обсуди вопрос 3–5 минут.
         </div>
         <div class="card-display">
-            <p>Фасилитационная карта для рефлексии</p>
             <button class="generate-btn" id="genCardBtn">🎴 Вытянуть карту</button>
             <div id="cardResult" style="display:none"></div>
         </div>
@@ -356,8 +355,11 @@
 
     <!-- TAB 5: Vision Game -->
     <div class="tab-content" id="vision">
+        <div class="info-box">
+            <strong>Для чего:</strong> собрать ясное, проверяемое видение продукта.
+            <strong>Что делать:</strong> отвечай на вопросы по одному; на выходе — 1 страница для команды и заказчика.
+        </div>
         <div class="vision-game">
-            <p style="font-size: 0.9rem; color: #6b5d4d;">Фасилитационная игра: 7 вопросов за 10–15 минут</p>
             
             <div class="vision-step" id="step1">
                 <h3>1. О продукте</h3>
@@ -682,32 +684,72 @@
     // ============ AUDIT WIZARD ============
     function showAuditStep(n) {
         if (n === 2) {
-            const t = document.getElementById('auditGoal').value.trim();
-            if (!t) { alert('Опиши цель/приоритет'); return; }
+            const t = document.getElementById('auditDesc').value.trim();
+            if (!t) { alert('Опиши ситуацию'); return; }
             document.getElementById('audit1').style.display = 'none';
             document.getElementById('audit2').style.display = 'block';
         } else if (n === 3) {
-            const cause = document.querySelector('input[name="cause"]:checked');
-            if (!cause) { alert('Выбери причину'); return; }
-            const verdict = document.getElementById('auditVerdict');
-            if (cause.value === 'знания') {
-                verdict.innerHTML = '✅ Обучение уместно: проблема в знаниях/навыках. Рекомендуемо: короткие практические блоки, тренажёры, база знаний. ';
-            } else if (cause.value === 'мотивация') {
-                verdict.innerHTML = '⚠️ Сначала мотивация/среда. Игровые форматы/симуляции могут помочь, но это не единственное решение.';
-            } else {
-                verdict.innerHTML = '⛔️ Обучение не решит культурные/процессные проблемы. Нужны изменения среды/менеджмента.';
-            }
             document.getElementById('audit2').style.display = 'none';
             document.getElementById('audit3').style.display = 'block';
+        } else if (n === 4) {
+            const g = document.getElementById('auditGoal').value.trim();
+            if (!g) { alert('Опиши цель/ожидаемое изменение'); return; }
+            document.getElementById('audit3').style.display = 'none';
+            document.getElementById('audit4').style.display = 'block';
+        } else if (n === 5) {
+            const cause = document.querySelector('input[name="cause"]:checked');
+            if (!cause) { alert('Выбери причину'); return; }
+            document.getElementById('audit4').style.display = 'none';
+            document.getElementById('audit5').style.display = 'block';
+        } else if (n === 6) {
+            const desc = document.getElementById('auditDesc').value.trim();
+            const audience = document.getElementById('auditAudience').value;
+            const goal = document.getElementById('auditGoal').value.trim();
+            const cause = document.querySelector('input[name="cause"]:checked').value;
+            const time = parseInt(document.getElementById('auditTime').value, 10);
+            const budget = document.getElementById('auditBudget').value;
+            const verdict = document.getElementById('auditVerdict');
+
+            let needsTraining = false;
+            let trainingType = '';
+            let nonLearning = '';
+
+            if (cause === 'среда') {
+                needsTraining = false;
+                nonLearning = 'Изменения среды: договорённости/стандарты у руководителей, корректировка процессов/инструментов, разбор инцидентов.';
+            } else if (cause === 'знания') {
+                needsTraining = true;
+                if (time <= 5) trainingType = 'микро‑инструкция + чеклист';
+                else if (time <= 15) trainingType = 'мини‑практикум с 1 кейсом и де‑брифом';
+                else trainingType = 'практический модуль с тренажёром/кейсом';
+                nonLearning = 'Поддержка: база знаний/FAQ, наставник на 1–2 сессии.';
+            } else if (cause === 'мотивация') {
+                needsTraining = true;
+                trainingType = (audience === 'руководители') ? 'управленческая сессия по ожиданиям/обратной связи' : 'симуляция/кейс с разбором последствий';
+                nonLearning = 'Менеджерские действия: цели/метрики, признание, устранение барьеров.';
+            }
+
+            const targetAudience = (audience === 'смешанная') ? 'руководители и сотрудники' : audience;
+            const why = `Проблема: ${cause}. Цель: ${goal}. Контекст: ${desc}. Ограничения: ${time} мин, бюджет — ${budget}.`;
+
+            verdict.innerHTML = `
+                <div><strong>${needsTraining ? '✅ Обучение уместно' : '⛔️ Обучение не первично'}</strong></div>
+                ${needsTraining ? `<div><strong>Формат:</strong> ${trainingType}</div>` : ''}
+                ${needsTraining ? `<div><strong>Аудитория:</strong> ${targetAudience}</div>` : ''}
+                <div><strong>Почему:</strong> ${why}</div>
+                <div><strong>Дополнительно:</strong> ${nonLearning}</div>
+            `;
+
+            document.getElementById('audit5').style.display = 'none';
+            document.getElementById('audit6').style.display = 'block';
         }
     }
     function resetAudit() {
-        document.getElementById('audit1').style.display = 'block';
-        document.getElementById('audit2').style.display = 'none';
-        document.getElementById('audit3').style.display = 'none';
-        document.getElementById('auditGoal').value = '';
-        const checked = document.querySelector('input[name="cause"]:checked');
-        if (checked) checked.checked = false;
+        ['audit1','audit2','audit3','audit4','audit5','audit6'].forEach(id => {
+            document.getElementById(id).style.display = (id === 'audit1') ? 'block' : 'none';
+        });
+        ['auditDesc','auditGoal'].forEach(id => { const el = document.getElementById(id); if (el) el.value=''; });
+        const checked = document.querySelector('input[name="cause"]:checked'); if (checked) checked.checked = false;
         document.getElementById('auditVerdict').innerHTML = '';
     }
 
