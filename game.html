@@ -580,7 +580,25 @@
         }
         updateHealthUI();
         if (health <= 0) endGame();
-        else if (health < 30) setMessage(action.reply + " ⚠️ Иванов на грани выгорания! Добавь ресурс и короткую практику.");
+        else if (health < 30) {
+            setMessage(action.reply + " ⚠️ Иванов на грани выгорания! Добавь ресурс и короткую практику.");
+            const mb = document.getElementById('methodBox');
+            if (mb) {
+                const cta = `<div style=\"margin-top:8px\"><em>Быстрые варианты:</em>
+                  <button class='action-btn' onclick=\"gotoActivitiesAndPreset('energizer')\">⚡ Энергайзер</button>
+                  <button class='action-btn' onclick=\"gotoActivitiesAndPreset('case10')\">🧩 Кейс‑разбор</button>
+                </div>`;
+                if (!mb.innerHTML.includes('Быстрые варианты:')) mb.innerHTML += cta;
+            }
+        }
+    }
+
+    function gotoActivitiesAndPreset(key) {
+        document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
+        document.querySelectorAll('.tab-content').forEach(c => c.classList.remove('active'));
+        document.querySelector('[data-tab="activities"]').classList.add('active');
+        document.getElementById('activities').classList.add('active');
+        applyPreset(key);
     }
 
     function resetGame() {
@@ -644,7 +662,8 @@
             const data = await response.json();
             const activity = data.choices?.[0]?.message?.content;
             if (!activity) throw new Error('No AI');
-            result.innerHTML = activity + '<div class="activity-source">🤖 Сгенерировано AI</div>';
+            const meta = `⏱ ${document.getElementById('timeSelect').value} мин · Формат: ${document.getElementById('groupSelect').value}`;
+            result.innerHTML = activity + `<div class="activity-meta">${meta}</div>` + '<div class="activity-source">🤖 Сгенерировано AI</div>';
             result.style.display = 'block';
         } catch (e) {
             const random = staticActivities[Math.floor(Math.random() * staticActivities.length)];
@@ -657,6 +676,9 @@
     }
 
     document.getElementById('genActivityBtn').onclick = generateActivityAI;
+    // «Ещё вариант» с теми же параметрами
+    const genAnother = document.getElementById('genAnotherBtn');
+    if (genAnother) genAnother.onclick = generateActivityAI;
 
     // убраны клиентские ключи, при ошибке — сразу база
 
@@ -688,7 +710,8 @@
         const text = cards[Math.floor(Math.random() * cards.length)];
         const result = document.getElementById('cardResult');
         result.style.display = 'block';
-        result.innerHTML = `<div class="card"><div class="card-text">${text}</div></div>`;
+        const hint = '<div style="font-size:0.8rem;opacity:0.85;margin-bottom:8px">Ведущий: ты · Тайминг: 3–5 мин · Ход: 1 мин тишины → короткий круг</div>';
+        result.innerHTML = hint + `<div class="card"><div class="card-text">${text}</div></div>`;
     };
 
     
@@ -833,8 +856,11 @@
 
             const list = arr => `<ul style="margin:6px 0 0 16px">${arr.map(x=>`<li>${x}</li>`).join('')}</ul>`;
 
+            const header = needsTraining
+              ? `<div style=\"background:rgba(34,193,160,0.12);padding:8px;border-radius:8px\"><strong>✅ Обучение уместно</strong></div>`
+              : `<div style=\"background:rgba(246,169,197,0.14);padding:8px;border-radius:8px\"><strong>⛔️ Обучение не первично</strong></div>`;
             verdict.innerHTML = `
-                <div><strong>${needsTraining ? '✅ Обучение уместно' : '⛔️ Обучение не первично'}</strong></div>
+                ${header}
                 ${needsTraining ? `<div><strong>Формат:</strong> ${trainingType}</div>` : ''}
                 ${needsTraining ? `<div><strong>Аудитория:</strong> ${targetAudience}</div>` : ''}
                 <div><strong>Почему:</strong> ${why}</div>
@@ -842,6 +868,7 @@
                 <div style="margin-top:8px"><strong>Вопросы заказчику:</strong>${list(questions)}</div>
                 <div style="margin-top:8px"><strong>Репетиция формулировок:</strong>${list(phrases)}</div>
                 <div style="margin-top:8px"><strong>Риски:</strong>${list(risks)}</div>
+                <div style=\"margin-top:10px\"><button class=\"action-btn\" onclick=\"copyAudit()\">📋 Скопировать сводку</button></div>
             `;
 
             document.getElementById('audit5').style.display = 'none';
@@ -855,6 +882,12 @@
         ['auditDesc','auditGoal'].forEach(id => { const el = document.getElementById(id); if (el) el.value=''; });
         const checked = document.querySelector('input[name="cause"]:checked'); if (checked) checked.checked = false;
         document.getElementById('auditVerdict').innerHTML = '';
+    }
+
+    function copyAudit() {
+        const el = document.getElementById('auditVerdict');
+        const text = el.innerText;
+        navigator.clipboard.writeText(text);
     }
 
     // ============ INIT ============
