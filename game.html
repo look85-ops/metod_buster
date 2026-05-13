@@ -272,13 +272,16 @@
                 <div class="api-note">AI-генерация через сервер (OpenRouter). При ошибке — выдадим из базы.</div>
             </div>
             <button class="generate-btn" id="genActivityBtn">🎲 Сгенерировать</button>
-            <button class="generate-btn" id="copyActivityBtn" style="background:#22c1a0">📋 Скопировать</button>
             <div class="activity-result" id="activityResult" style="display:none"></div>
         </div>
     </div>
 
     <!-- TAB 3: Cards -->
     <div class="tab-content" id="cards">
+        <div class="info-box">
+            <strong>Для чего:</strong> встряхнуть мышление команды.
+            <strong>Что делать:</strong> нажми «Вытянуть карту» и обсуди вопрос 3–5 минут.
+        </div>
         <div class="card-display">
             <p>Фасилитационная карта для рефлексии</p>
             <button class="generate-btn" id="genCardBtn">🎴 Вытянуть карту</button>
@@ -288,23 +291,62 @@
 
     <!-- TAB 4: Audit (L&D Decision) -->
     <div class="tab-content" id="audit">
+        <div class="info-box">
+            <strong>Для чего:</strong> отработать разговор с заказчиком: нужно ли обучение, какое, кому и почему.
+            <strong>Что делать:</strong> пройди шаги, получи вердикт и рекомендации.
+        </div>
         <div class="vision-game">
             <div class="vision-step" id="audit1">
-                <h3>1. Цель и задача</h3>
-                <p>Опиши кратко: цель компании и приоритетное задание для команды.</p>
-                <textarea class="vision-input" id="auditGoal" rows="2" placeholder="Цель и приоритет... "></textarea>
+                <h3>1. Ситуация</h3>
+                <p>Опиши контекст и запрос заказчика (1–3 предложения).</p>
+                <textarea class="vision-input" id="auditDesc" rows="2" placeholder="Ситуация/контекст... "></textarea>
                 <button class="vision-btn" onclick="showAuditStep(2)">Далее →</button>
             </div>
             <div class="vision-step" id="audit2" style="display:none">
-                <h3>2. Что мешает?</h3>
+                <h3>2. Аудитория</h3>
+                <p>Кого касается решение?</p>
+                <select class="vision-input" id="auditAudience">
+                    <option value="сотрудники">Сотрудники (исполнители)</option>
+                    <option value="руководители">Руководители</option>
+                    <option value="новые">Новые сотрудники</option>
+                    <option value="смешанная">Смешанная</option>
+                </select>
+                <button class="vision-btn" onclick="showAuditStep(3)">Далее →</button>
+            </div>
+            <div class="vision-step" id="audit3" style="display:none">
+                <h3>3. Цель бизнеса</h3>
+                <p>Какого изменения ждёте? Что будет иначе?</p>
+                <textarea class="vision-input" id="auditGoal" rows="2" placeholder="Желаемое изменение/метрика... "></textarea>
+                <button class="vision-btn" onclick="showAuditStep(4)">Далее →</button>
+            </div>
+            <div class="vision-step" id="audit4" style="display:none">
+                <h3>4. Причина проблемы</h3>
                 <p>Основная причина невыполнения задачи:</p>
                 <label><input type="radio" name="cause" value="среда"> Рабочая среда / культура</label><br>
                 <label><input type="radio" name="cause" value="знания"> Недостаток знаний/навыков</label><br>
                 <label><input type="radio" name="cause" value="мотивация"> Мотивация</label><br>
-                <button class="vision-btn" onclick="showAuditStep(3)">Далее →</button>
+                <button class="vision-btn" onclick="showAuditStep(5)">Далее →</button>
             </div>
-            <div class="vision-step" id="audit3" style="display:none">
-                <h3>3. Вердикт</h3>
+            <div class="vision-step" id="audit5" style="display:none">
+                <h3>5. Ограничения</h3>
+                <p>Выбери основные ограничения.</p>
+                <div style="display:grid;grid-template-columns:repeat(2,1fr);gap:8px;max-width:560px;">
+                    <select class="vision-input" id="auditTime">
+                        <option value="5">Время: 5 мин</option>
+                        <option value="10" selected>Время: 10 мин</option>
+                        <option value="15">Время: 15 мин</option>
+                        <option value="60">Время: 60+ мин</option>
+                    </select>
+                    <select class="vision-input" id="auditBudget">
+                        <option value="нет">Бюджет: нет</option>
+                        <option value="малый">Бюджет: малый</option>
+                        <option value="есть">Бюджет: есть</option>
+                    </select>
+                </div>
+                <button class="vision-btn" onclick="showAuditStep(6)">Получить вердикт →</button>
+            </div>
+            <div class="vision-step" id="audit6" style="display:none">
+                <h3>Вердикт</h3>
                 <div id="auditVerdict" class="activity-result" style="display:block"></div>
                 <button class="vision-btn" onclick="resetAudit()">🔄 Сбросить</button>
             </div>
@@ -401,16 +443,16 @@
     ];
 
     const cards = [
-        { name: "Чёрный квадрат", text: "Что в нашем проекте очевидно для всех, но мы молчим?" },
-        { name: "Клин красный", text: "Какое решение мы откладываем, хотя оно неизбежно?" },
-        { name: "Супрематическая линия", text: "Где в процессе лишнее напряжение? Как его снять?" },
-        { name: "Партизанская", text: "Что мы можем сделать нестандартно, без бюджета?" },
-        { name: "Эль Лисицкий", text: "Как пробить стену в коммуникации с заказчиком?" },
-        { name: "Диагностика", text: "Какой вопрос вы боялись задать друг другу?" },
-        { name: "Метафора", text: "Если бы наш проект был фильмом — какой жанр и почему?" },
-        { name: "Ретроспектива", text: "Что из того, что мы делали вчера, уже не нужно?" },
-        { name: "Будущее", text: "Какой следующий шаг вы сделаете завтра без чьего-либо разрешения?" },
-        { name: "Обратная связь", text: "Что я могу сделать для вас уже сегодня?" }
+        "Что в нашем проекте очевидно для всех, но мы молчим?",
+        "Какое решение мы откладываем, хотя оно неизбежно?",
+        "Где в процессе лишнее напряжение? Как его снять?",
+        "Что мы можем сделать нестандартно, без бюджета?",
+        "Как пробить стену в коммуникации с заказчиком?",
+        "Какой вопрос вы боялись задать друг другу?",
+        "Если бы наш проект был фильмом — какой жанр и почему?",
+        "Что из того, что мы делали вчера, уже не нужно?",
+        "Какой следующий шаг вы сделаете завтра без чьего-либо разрешения?",
+        "Что я могу сделать для вас уже сегодня?"
     ];
 
     
@@ -518,19 +560,13 @@
     }
 
     document.getElementById('genActivityBtn').onclick = generateActivityAI;
-    document.getElementById('copyActivityBtn').onclick = () => {
-        const el = document.getElementById('activityResult');
-        if (el.style.display === 'none') return;
-        const text = el.innerText;
-        navigator.clipboard.writeText(text);
-    };
 
     // ============ CARD GENERATOR ============
     document.getElementById('genCardBtn').onclick = () => {
-        const random = cards[Math.floor(Math.random() * cards.length)];
+        const text = cards[Math.floor(Math.random() * cards.length)];
         const result = document.getElementById('cardResult');
         result.style.display = 'block';
-        result.innerHTML = `<div class="card"><div class="card-name">${random.name}</div><div class="card-text">${random.text}</div></div>`;
+        result.innerHTML = `<div class="card"><div class="card-text">${text}</div></div>`;
     };
 
     
