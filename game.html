@@ -67,6 +67,7 @@
             gap: 1rem;
             border: 1px solid #e5e7eb;
         }
+        .mood-icon { font-size: 1.6rem; line-height: 1; }
         .character-name { font-weight: bold; font-size: 0.9rem; }
         .health-bar { flex: 1; background: #e2e8f0; border-radius: 20px; overflow: hidden; height: 20px; }
         .health-fill { background: linear-gradient(90deg, #22c1a0, #3a5a78); width: 100%; height: 100%; transition: width 0.3s ease; }
@@ -236,6 +237,7 @@
     <!-- TAB 1: Game -->
     <div class="tab-content active" id="game">
         <div class="character">
+            <span id="moodIcon" class="mood-icon" aria-label="Настроение">🙂</span>
             <span class="character-name">⚙️ Инженер Иванов</span>
             <div class="health-bar"><div class="health-fill" id="healthFill"></div></div>
             <span class="health-value" id="healthValue">100</span>
@@ -251,6 +253,14 @@
     <div class="tab-content" id="activities">
         <div class="generator-box">
             <p>Генерируй активности для оживления обучения</p>
+            <div class="preset-row" style="display:flex;gap:8px;flex-wrap:wrap;justify-content:center;margin:0.5rem 0 0.8rem">
+                <button class="action-btn" onclick="applyPreset('energizer')">⚡ Энергайзер 5 мин</button>
+                <button class="action-btn" onclick="applyPreset('warmup')">🔥 Разогрев дискуссии</button>
+                <button class="action-btn" onclick="applyPreset('case10')">🧩 Кейс‑разбор 10 мин</button>
+                <button class="action-btn" onclick="applyPreset('retro')">🔁 Экспресс‑ретро</button>
+                <button class="action-btn" onclick="applyPreset('groupSolve')">🤝 Решение в группах</button>
+                <button class="action-btn" onclick="applyPreset('closure')">🎯 Закрытие и перенос</button>
+            </div>
             <div style="margin-bottom: 1rem;">
                 <div style="display:grid;grid-template-columns:repeat(2,1fr);gap:8px;max-width:560px;margin:0 auto 8px;">
                   <input id="topicInput" class="vision-input" placeholder="Тема / контекст (опц.)">
@@ -499,6 +509,12 @@
         document.getElementById('healthFill').style.width = percent + "%";
         document.getElementById('healthValue').textContent = Math.floor(percent);
         document.getElementById('healthFill').style.backgroundColor = percent < 25 ? "#b34e4e" : "#2f6b47";
+        const mood = document.getElementById('moodIcon');
+        if (percent >= 80) mood.textContent = '😄';
+        else if (percent >= 60) mood.textContent = '🙂';
+        else if (percent >= 40) mood.textContent = '😕';
+        else if (percent >= 20) mood.textContent = '😫';
+        else mood.textContent = '😵‍💫';
     }
 
     function setMessage(msg) {
@@ -624,6 +640,29 @@
     }
 
     document.getElementById('genActivityBtn').onclick = generateActivityAI;
+
+    // Presets for quick generation
+    function applyPreset(key) {
+        const topic = document.getElementById('topicInput');
+        const goal = document.getElementById('goalSelect');
+        const time = document.getElementById('timeSelect');
+        const group = document.getElementById('groupSelect');
+        const presets = {
+            energizer:   { topic: 'включение группы', goal: 'включение', time: '5',  group: 'в группах' },
+            warmup:      { topic: 'разогрев дискуссии по теме занятия', goal: 'осмысление', time: '10', group: 'в парах' },
+            case10:      { topic: 'разбор 1 практического кейса', goal: 'осмысление', time: '10', group: 'в группах' },
+            retro:       { topic: 'быстрая ретроспектива прошедшего спринта', goal: 'осмысление', time: '10', group: 'в группах' },
+            groupSolve:  { topic: 'выработка решения для задачи заказчика', goal: 'решение', time: '15', group: 'в группах' },
+            closure:     { topic: 'закрытие модуля и перенос в практику', goal: 'решение', time: '10', group: 'индивидуально' }
+        };
+        const p = presets[key];
+        if (!p) return;
+        topic.value = p.topic;
+        goal.value = p.goal;
+        time.value = p.time;
+        group.value = p.group;
+        generateActivityAI();
+    }
 
     // ============ CARD GENERATOR ============
     document.getElementById('genCardBtn').onclick = () => {
