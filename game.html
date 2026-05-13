@@ -4,49 +4,56 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Бустер методиста</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
     <style>
         * { box-sizing: border-box; }
         body {
-            font-family: system-ui, 'Segoe UI', sans-serif;
-            max-width: 700px;
+            font-family: Inter, system-ui, 'Segoe UI', sans-serif;
+            max-width: 840px;
             margin: 0 auto;
             padding: 1rem;
-            background: #f5f3ef;
-            color: #1e1b18;
+            background:
+                radial-gradient(900px 900px at 10% -10%, rgba(34,193,160,0.12) 0%, transparent 60%),
+                radial-gradient(900px 900px at 90% 0%, rgba(246,169,197,0.12) 0%, transparent 60%),
+                #faf9f7;
+            color: #0f172a;
             min-height: 100vh;
         }
         .container {
-            background: white;
-            border-radius: 1.5rem;
+            background: #ffffffcc;
+            backdrop-filter: blur(4px);
+            border-radius: 1rem;
             padding: 1.5rem;
-            box-shadow: 0 4px 16px rgba(0,0,0,0.04);
+            box-shadow: 0 6px 22px rgba(15,23,42,0.06);
         }
         header {
             text-align: center;
             margin-bottom: 1.5rem;
         }
-        h1 { font-size: 1.5rem; margin: 0 0 0.3rem 0; }
-        .subtitle { color: #6b5d4d; font-size: 0.9rem; }
+        h1 { font-size: 1.6rem; margin: 0 0 0.3rem 0; letter-spacing: -0.3px; }
+        .subtitle { color: #64748b; font-size: 0.95rem; }
         .tabs {
             display: flex;
-            gap: 0.3rem;
+            gap: 0.4rem;
             margin-bottom: 1.5rem;
-            border-bottom: 2px solid #e8e4dd;
-            padding-bottom: 0.5rem;
+            border-bottom: 1px solid #e5e7eb;
+            padding-bottom: 0.6rem;
             flex-wrap: wrap;
         }
         .tab {
-            padding: 0.5rem 0.8rem;
+            padding: 0.48rem 0.9rem;
             border: none;
             background: none;
             cursor: pointer;
             font-size: 0.8rem;
-            border-radius: 2rem;
+            border-radius: 999px;
             transition: 0.15s;
-            color: #6b5d4d;
+            color: #475569;
         }
-        .tab:hover { background: #f0ede8; }
-        .tab.active { background: #2f6b47; color: white; }
+        .tab:hover { background: #f1f5f9; }
+        .tab.active { background: #3a5a78; color: white; }
         .tab-content { display: none; }
         .tab-content.active { display: block; }
 
@@ -58,35 +65,35 @@
             display: flex;
             align-items: center;
             gap: 1rem;
-            border: 1px solid #e2d9d0;
+            border: 1px solid #e5e7eb;
         }
         .character-name { font-weight: bold; font-size: 0.9rem; }
-        .health-bar { flex: 1; background: #e8e4dd; border-radius: 20px; overflow: hidden; height: 20px; }
-        .health-fill { background: #2f6b47; width: 100%; height: 100%; transition: width 0.3s ease; }
+        .health-bar { flex: 1; background: #e2e8f0; border-radius: 20px; overflow: hidden; height: 20px; }
+        .health-fill { background: linear-gradient(90deg, #22c1a0, #3a5a78); width: 100%; height: 100%; transition: width 0.3s ease; }
         .health-value { font-weight: bold; min-width: 3rem; }
         .actions-grid { display: flex; flex-wrap: wrap; gap: 0.5rem; margin: 1rem 0; }
         .action-btn {
-            background: #f5f3ef;
-            border: 1px solid #d4cfc6;
+            background: #f8fafc;
+            border: 1px solid #e2e8f0;
             padding: 0.4rem 0.7rem;
             border-radius: 2rem;
             font-size: 0.8rem;
             cursor: pointer;
             transition: 0.15s;
         }
-        .action-btn:hover { background: #e8e4dd; transform: scale(0.97); }
-        .action-btn.good { border-left: 3px solid #2f6b47; }
+        .action-btn:hover { background: #eef2f7; transform: translateY(-1px); }
+        .action-btn.good { border-left: 3px solid #22c1a0; }
         .action-btn.bad { border-left: 3px solid #b34e4e; }
         .message-box {
-            background: #fdf8f3;
+            background: #f8fafc;
             padding: 1rem;
             border-radius: 1rem;
             margin: 1rem 0;
-            border-left: 4px solid #d49c6c;
+            border-left: 4px solid #3a5a78;
             font-size: 0.95rem;
         }
         .reset-btn {
-            background: #d4cfc6;
+            background: #e2e8f0;
             border: none;
             padding: 0.5rem 1.2rem;
             border-radius: 2rem;
@@ -100,11 +107,11 @@
             margin-top: 1rem;
             font-size: 0.9rem;
         }
-        .win-advice { background: #e8f5e9; border-left: 4px solid #2f6b47; }
+        .win-advice { background: #e8f5e9; border-left: 4px solid #22c1a0; }
 
         .generator-box { text-align: center; padding: 1rem; }
         .generate-btn {
-            background: #2f6b47;
+            background: #3a5a78;
             color: white;
             border: none;
             padding: 0.7rem 1.2rem;
@@ -113,10 +120,10 @@
             cursor: pointer;
             margin: 0.5rem 0;
         }
-        .generate-btn:hover { background: #245539; }
+        .generate-btn:hover { background: #2f4966; }
         .generate-btn:disabled { background: #999; cursor: not-allowed; }
         .activity-result {
-            background: #f5f3ef;
+            background: #f8fafc;
             padding: 1rem;
             border-radius: 1rem;
             margin-top: 1rem;
@@ -126,7 +133,7 @@
         }
         .activity-source {
             font-size: 0.75rem;
-            color: #6b5d4d;
+            color: #64748b;
             margin-top: 0.5rem;
             font-style: italic;
         }
@@ -138,7 +145,7 @@
 
         .card-display { text-align: center; padding: 1rem; }
         .card {
-            background: linear-gradient(135deg, #2f6b47 0%, #1e4a32 100%);
+            background: linear-gradient(135deg, #3a5a78 0%, #1f3b54 100%);
             color: white;
             padding: 1.5rem;
             border-radius: 1rem;
@@ -175,20 +182,20 @@
             border-radius: 1rem;
             padding: 1rem;
             margin: 1rem 0;
-            border: 1px solid #e2d9d0;
+            border: 1px solid #e5e7eb;
         }
-        .vision-step h3 { margin: 0 0 0.5rem 0; font-size: 1rem; color: #2f6b47; }
-        .vision-step p { margin: 0 0 0.8rem 0; font-size: 0.9rem; color: #6b5d4d; }
+        .vision-step h3 { margin: 0 0 0.5rem 0; font-size: 1rem; color: #3a5a78; }
+        .vision-step p { margin: 0 0 0.8rem 0; font-size: 0.9rem; color: #64748b; }
         .vision-input {
             width: 100%;
             padding: 0.6rem;
-            border: 1px solid #d4cfc6;
+            border: 1px solid #e2e8f0;
             border-radius: 0.5rem;
             font-size: 0.9rem;
             margin-bottom: 0.5rem;
         }
         .vision-btn {
-            background: #2f6b47;
+            background: #3a5a78;
             color: white;
             border: none;
             padding: 0.5rem 1rem;
@@ -203,7 +210,7 @@
             margin-top: 1rem;
             font-size: 0.9rem;
         }
-        .vision-result h4 { margin: 0 0 0.5rem 0; color: #2f6b47; }
+        .vision-result h4 { margin: 0 0 0.5rem 0; color: #14532d; }
         .vision-result ul { margin: 0; padding-left: 1.2rem; }
 
         footer { text-align: center; font-size: 0.75rem; color: #9a8a7a; margin-top: 2rem; }
@@ -219,16 +226,17 @@
     </header>
 
     <div class="tabs">
-        <button class="tab active" data-tab="game">🎭 Иванов</button>
+        <button class="tab active" data-tab="game">🎭 Страдания инженера Иванова</button>
         <button class="tab" data-tab="activities">⚡ Активности</button>
         <button class="tab" data-tab="cards">🎴 Карты</button>
+        <button class="tab" data-tab="audit">🔍 Аудит</button>
         <button class="tab" data-tab="vision">🎯 Видение</button>
     </div>
 
     <!-- TAB 1: Game -->
     <div class="tab-content active" id="game">
         <div class="character">
-            <span class="character-name">⚙️ Иванов</span>
+            <span class="character-name">⚙️ Инженер Иванов</span>
             <div class="health-bar"><div class="health-fill" id="healthFill"></div></div>
             <span class="health-value" id="healthValue">100</span>
         </div>
@@ -243,10 +251,28 @@
         <div class="generator-box">
             <p>Генерируй активности для оживления обучения</p>
             <div style="margin-bottom: 1rem;">
-                <input type="password" id="apiKeyInput" class="vision-input" placeholder="API Key (опционально)" style="width:100%;max-width:300px">
-                <div class="api-note">Без ключа — из статичной базы. Свой ключ — AI-генерация</div>
+                <div style="display:grid;grid-template-columns:repeat(2,1fr);gap:8px;max-width:560px;margin:0 auto 8px;">
+                  <input id="topicInput" class="vision-input" placeholder="Тема / контекст (опц.)">
+                  <select id="goalSelect" class="vision-input">
+                    <option value="включение">Цель: включение</option>
+                    <option value="осмысление">Цель: осмысление</option>
+                    <option value="решение">Цель: выработка решения</option>
+                  </select>
+                  <select id="timeSelect" class="vision-input">
+                    <option value="5">5 минут</option>
+                    <option value="10" selected>10 минут</option>
+                    <option value="15">15 минут</option>
+                  </select>
+                  <select id="groupSelect" class="vision-input">
+                    <option value="индивидуально">Индивидуально</option>
+                    <option value="в парах">В парах</option>
+                    <option value="в группах">В группах</option>
+                  </select>
+                </div>
+                <div class="api-note">AI-генерация через сервер (OpenRouter). При ошибке — выдадим из базы.</div>
             </div>
             <button class="generate-btn" id="genActivityBtn">🎲 Сгенерировать</button>
+            <button class="generate-btn" id="copyActivityBtn" style="background:#22c1a0">📋 Скопировать</button>
             <div class="activity-result" id="activityResult" style="display:none"></div>
         </div>
     </div>
@@ -260,7 +286,30 @@
         </div>
     </div>
 
-    
+    <!-- TAB 4: Audit (L&D Decision) -->
+    <div class="tab-content" id="audit">
+        <div class="vision-game">
+            <div class="vision-step" id="audit1">
+                <h3>1. Цель и задача</h3>
+                <p>Опиши кратко: цель компании и приоритетное задание для команды.</p>
+                <textarea class="vision-input" id="auditGoal" rows="2" placeholder="Цель и приоритет... "></textarea>
+                <button class="vision-btn" onclick="showAuditStep(2)">Далее →</button>
+            </div>
+            <div class="vision-step" id="audit2" style="display:none">
+                <h3>2. Что мешает?</h3>
+                <p>Основная причина невыполнения задачи:</p>
+                <label><input type="radio" name="cause" value="среда"> Рабочая среда / культура</label><br>
+                <label><input type="radio" name="cause" value="знания"> Недостаток знаний/навыков</label><br>
+                <label><input type="radio" name="cause" value="мотивация"> Мотивация</label><br>
+                <button class="vision-btn" onclick="showAuditStep(3)">Далее →</button>
+            </div>
+            <div class="vision-step" id="audit3" style="display:none">
+                <h3>3. Вердикт</h3>
+                <div id="auditVerdict" class="activity-result" style="display:block"></div>
+                <button class="vision-btn" onclick="resetAudit()">🔄 Сбросить</button>
+            </div>
+        </div>
+    </div>
 
     <!-- TAB 5: Vision Game -->
     <div class="tab-content" id="vision">
@@ -425,42 +474,31 @@
     });
 
     // ============ ACTIVITIES GENERATOR ============
-    const ACTIVITY_PROMPT = `Ты — опытный L&D методист. Придумай одну оригинальную активность для обучения взрослых (5-15 минут). 
-Формат: краткая инструкция для фасилитатора (1-3 строки).
-Требования: интерактивная, связана с практикой, не требует сложных материалов.
-Отвечай ТОЛЬКО текстом активности, без пояснений.`;
+    function buildActivityPrompt() {
+        const topic = document.getElementById('topicInput').value.trim();
+        const goal = document.getElementById('goalSelect').value;
+        const time = document.getElementById('timeSelect').value;
+        const group = document.getElementById('groupSelect').value;
+        return `Ты — опытный L&D методист. Придумай одну оригинальную активность для обучения взрослых (до ${time} минут), формат: ${group}.\n`+
+               (topic ? `Контекст: ${topic}.\n` : '')+
+               `Цель: ${goal}. Требования: интерактивная, связана с практикой, не требует сложных материалов.\n`+
+               `Формат ответа: краткая инструкция для фасилитатора (1–3 строки). Только текст активности, без пояснений.`;
+    }
 
     async function generateActivityAI() {
         const btn = document.getElementById('genActivityBtn');
         const result = document.getElementById('activityResult');
-        const apiKey = document.getElementById('apiKeyInput').value.trim();
         
         btn.disabled = true;
         btn.textContent = "⏳ Генерирую...";
         result.style.display = 'none';
 
-        // Если нет ключа - fallback на статику
-        if (!apiKey) {
-            const random = staticActivities[Math.floor(Math.random() * staticActivities.length)];
-            result.innerHTML = random + '<div class="activity-source">📋 Из базы (введите API Key для AI)</div>';
-            result.style.display = 'block';
-            btn.disabled = false;
-            btn.textContent = "🎲 Сгенерировать";
-            return;
-        }
-
         try {
-            const response = await fetch('https://openrouter.ai/api/v1/chat/completions', {
+            const response = await fetch('/.netlify/functions/chat', {
                 method: 'POST',
-                headers: {
-                    'Authorization': `Bearer ${apiKey}`,
-                    'Content-Type': 'application/json',
-                    'HTTP-Referer': 'https://github.io',
-                    'X-Title': 'Methodist Booster'
-                },
+                headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify({
-                    model: 'openai/gpt-4o-mini',
-                    messages: [{ role: 'user', content: ACTIVITY_PROMPT }]
+                    messages: [{ role: 'user', content: buildActivityPrompt() }]
                 })
             });
             
@@ -471,7 +509,7 @@
             result.style.display = 'block';
         } catch (e) {
             const random = staticActivities[Math.floor(Math.random() * staticActivities.length)];
-            result.innerHTML = random + '<div class="activity-source">📋 Из базы (ошибка API)</div>';
+            result.innerHTML = random + '<div class="activity-source">📋 Из базы (ошибка AI)</div>';
             result.style.display = 'block';
         } finally {
             btn.disabled = false;
@@ -480,6 +518,12 @@
     }
 
     document.getElementById('genActivityBtn').onclick = generateActivityAI;
+    document.getElementById('copyActivityBtn').onclick = () => {
+        const el = document.getElementById('activityResult');
+        if (el.style.display === 'none') return;
+        const text = el.innerText;
+        navigator.clipboard.writeText(text);
+    };
 
     // ============ CARD GENERATOR ============
     document.getElementById('genCardBtn').onclick = () => {
@@ -522,10 +566,51 @@
                     <li><strong>MVP:</strong> ${answers[5]}</li>
                     <li><strong>Критерий успеха:</strong> ${answers[6]}</li>
                 </ul>
-                <button class="vision-btn" style="margin-top:1rem" onclick="location.reload()">🔄 Начать заново</button>
+                <div style="display:flex;gap:8px;margin-top:12px;">
+                  <button class="vision-btn" onclick="copyVision()">📋 Скопировать</button>
+                  <button class="vision-btn" style="background:#22c1a0" onclick="location.reload()">🔄 Начать заново</button>
+                </div>
             </div>
         `;
         document.getElementById('step7').style.display = 'none';
+    }
+
+    function copyVision() {
+        const el = document.getElementById('visionResult');
+        const text = el.innerText;
+        navigator.clipboard.writeText(text);
+    }
+
+    // ============ AUDIT WIZARD ============
+    function showAuditStep(n) {
+        if (n === 2) {
+            const t = document.getElementById('auditGoal').value.trim();
+            if (!t) { alert('Опиши цель/приоритет'); return; }
+            document.getElementById('audit1').style.display = 'none';
+            document.getElementById('audit2').style.display = 'block';
+        } else if (n === 3) {
+            const cause = document.querySelector('input[name="cause"]:checked');
+            if (!cause) { alert('Выбери причину'); return; }
+            const verdict = document.getElementById('auditVerdict');
+            if (cause.value === 'знания') {
+                verdict.innerHTML = '✅ Обучение уместно: проблема в знаниях/навыках. Рекомендуемо: короткие практические блоки, тренажёры, база знаний. ';
+            } else if (cause.value === 'мотивация') {
+                verdict.innerHTML = '⚠️ Сначала мотивация/среда. Игровые форматы/симуляции могут помочь, но это не единственное решение.';
+            } else {
+                verdict.innerHTML = '⛔️ Обучение не решит культурные/процессные проблемы. Нужны изменения среды/менеджмента.';
+            }
+            document.getElementById('audit2').style.display = 'none';
+            document.getElementById('audit3').style.display = 'block';
+        }
+    }
+    function resetAudit() {
+        document.getElementById('audit1').style.display = 'block';
+        document.getElementById('audit2').style.display = 'none';
+        document.getElementById('audit3').style.display = 'none';
+        document.getElementById('auditGoal').value = '';
+        const checked = document.querySelector('input[name="cause"]:checked');
+        if (checked) checked.checked = false;
+        document.getElementById('auditVerdict').innerHTML = '';
     }
 
     // ============ INIT ============
