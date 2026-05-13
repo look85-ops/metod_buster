@@ -222,7 +222,6 @@
         <button class="tab active" data-tab="game">🎭 Иванов</button>
         <button class="tab" data-tab="activities">⚡ Активности</button>
         <button class="tab" data-tab="cards">🎴 Карты</button>
-        <button class="tab" data-tab="questions">💬 Вопросы</button>
         <button class="tab" data-tab="vision">🎯 Видение</button>
     </div>
 
@@ -261,10 +260,7 @@
         </div>
     </div>
 
-    <!-- TAB 4: Questions -->
-    <div class="tab-content" id="questions">
-        <div id="questionsList"></div>
-    </div>
+    
 
     <!-- TAB 5: Vision Game -->
     <div class="tab-content" id="vision">
@@ -368,15 +364,7 @@
         { name: "Обратная связь", text: "Что я могу сделать для вас уже сегодня?" }
     ];
 
-    const questions = [
-        { q: "Что я узнал(а) о себе как обучающемся?", tag: "рефлексия" },
-        { q: "Какой момент был самым ценным?", tag: "рефлексия" },
-        { q: "Что я буду делать иначе после обучения?", tag: "перенос" },
-        { q: "Какой вопрос остался без ответа?", tag: "неопределённость" },
-        { q: "С кем из группы хочу продолжить общение?", tag: "связи" },
-        { q: "Что меня запутало или вызвало сопротивление?", tag: "дискомфорт" },
-        { q: "Какой момент меня удивил?", tag: "неожиданность" }
-    ];
+    
 
     // ============ GAME LOGIC ============
     let health = 100;
@@ -501,9 +489,7 @@
         result.innerHTML = `<div class="card"><div class="card-name">${random.name}</div><div class="card-text">${random.text}</div></div>`;
     };
 
-    // ============ QUESTIONS ============
-    document.getElementById('questionsList').innerHTML = "<ul class='questions-list'>" +
-        questions.map(q => `<li><span class="category-tag">${q.tag}</span> ${q.q}</li>`).join('') + "</ul>";
+    
 
     // ============ VISION GAME ============
     function nextStep(current) {
